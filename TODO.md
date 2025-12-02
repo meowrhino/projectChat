@@ -82,12 +82,13 @@ Esta es la parte más importante. Aquí conectarás tu app con GitHub.
 1.  **Crea el Despliegue Manual**: Haz clic en el botón **Create Web Service** al final de la página de configuración.
 2.  **Espera a que se Despliegue**: Render empezará a instalar las dependencias y a iniciar tu servidor. Verás un log en tiempo real. Si todo va bien, aparecerá el mensaje `project-chat backend listening on 10000` y tu servicio estará "Live".
 3.  **Obtén la URL de tu Backend**: Render te dará una URL pública para tu servicio, algo como `https://mi-chat-proyectos.onrender.com`. Cópiala.
+
 4.  **Configura el Frontend**:
     *   Abre el archivo `config.js` en tu editor de código.
     *   Pega la URL de tu backend en la variable `API_BASE`:
 
         ```javascript
-        const API_BASE = "https://mi-chat-proyectos.onrender.com";
+        const API_BASE = "https://projectchat-yo8v.onrender.com/";
         ```
 
     *   Guarda el archivo y **sube este último cambio a tu repositorio de GitHub**.
