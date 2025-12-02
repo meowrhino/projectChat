@@ -18,7 +18,7 @@
   --danger: #f24a5e;
 
   /* Utilidades */
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --shadow: 0 16px 44px rgba(0, 0, 0, 0.75);
   --ring: var(--accent);
 }
 
@@ -68,13 +68,15 @@ h1 {
   padding: 30px 20px;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border-left: 4px solid var(--accent);
+  border: none;
   text-align: center;
+  border-radius: 6px;
 }
 
 .project-card:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .project-card h3 {
@@ -182,7 +184,6 @@ button {
 
 button:hover {
   color: var(--accent);
-  text-decoration: underline;
 }
 
 button:active {
@@ -196,20 +197,24 @@ button:disabled {
 }
 
 button.primary {
-  color: var(--accent);
+  color: var(--text);
   background: none;
+  border-bottom: 1px solid transparent;
 }
 
 button.primary:hover {
-  color: var(--accent-2);
+  color: var(--accent);
+  border-bottom-color: var(--accent);
 }
 
 button.ghost {
   color: var(--muted);
+  border-bottom: 1px solid transparent;
 }
 
 button.ghost:hover {
   color: var(--text);
+  border-bottom-color: var(--muted);
 }
 
 /* 9) Utilidades de layout ------------------------------------------------- */
@@ -231,11 +236,12 @@ button.ghost:hover {
 
 .chip {
   display: inline-block;
-  padding: 4px 10px;
+  padding: 2px 6px;
   font-size: 12px;
-  background: var(--muted);
-  color: var(--text);
+  background: transparent;
+  color: var(--muted);
   border-radius: 3px;
+  border: 1px solid var(--muted);
   font-weight: 500;
 }
 

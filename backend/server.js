@@ -161,6 +161,169 @@ setInterval(() => {
 // ============================================================================
 const nowISO = () => new Date().toISOString();
 
+// Lista de colores HTML permitidos (minúsculas)
+const ALLOWED_COLORS = new Set(
+  [
+    // Pink
+    "mediumvioletred",
+    "deeppink",
+    "palevioletred",
+    "hotpink",
+    "lightpink",
+    "pink",
+    // Red
+    "darkred",
+    "red",
+    "firebrick",
+    "crimson",
+    "indianred",
+    "lightcoral",
+    "salmon",
+    "darksalmon",
+    "lightsalmon",
+    // Orange
+    "orangered",
+    "tomato",
+    "darkorange",
+    "coral",
+    "orange",
+    // Yellow
+    "darkkhaki",
+    "gold",
+    "khaki",
+    "peachpuff",
+    "yellow",
+    "palegoldenrod",
+    "moccasin",
+    "papayawhip",
+    "lightgoldenrodyellow",
+    "lemonchiffon",
+    "lightyellow",
+    // Brown
+    "maroon",
+    "brown",
+    "saddlebrown",
+    "sienna",
+    "chocolate",
+    "darkgoldenrod",
+    "peru",
+    "rosybrown",
+    "goldenrod",
+    "sandybrown",
+    "tan",
+    "burlywood",
+    "wheat",
+    "navajowhite",
+    "bisque",
+    "blanchedalmond",
+    "cornsilk",
+    // Purple / violet / magenta
+    "indigo",
+    "purple",
+    "darkmagenta",
+    "darkviolet",
+    "darkslateblue",
+    "blueviolet",
+    "darkorchid",
+    "fuchsia",
+    "magenta",
+    "slateblue",
+    "mediumslateblue",
+    "mediumorchid",
+    "mediumpurple",
+    "orchid",
+    "violet",
+    "plum",
+    "thistle",
+    "lavender",
+    // Blue
+    "midnightblue",
+    "navy",
+    "darkblue",
+    "mediumblue",
+    "blue",
+    "royalblue",
+    "steelblue",
+    "dodgerblue",
+    "deepskyblue",
+    "cornflowerblue",
+    "skyblue",
+    "lightskyblue",
+    "lightsteelblue",
+    "lightblue",
+    "powderblue",
+    // Cyan
+    "teal",
+    "darkcyan",
+    "lightseagreen",
+    "cadetblue",
+    "darkturquoise",
+    "mediumturquoise",
+    "turquoise",
+    "aqua",
+    "cyan",
+    "aquamarine",
+    "paleturquoise",
+    "lightcyan",
+    // Green
+    "darkgreen",
+    "green",
+    "darkolivegreen",
+    "forestgreen",
+    "seagreen",
+    "olive",
+    "olivedrab",
+    "mediumseagreen",
+    "limegreen",
+    "lime",
+    "springgreen",
+    "mediumspringgreen",
+    "darkseagreen",
+    "mediumaquamarine",
+    "yellowgreen",
+    "lawngreen",
+    "chartreuse",
+    "lightgreen",
+    "greenyellow",
+    "palegreen",
+    // White-ish
+    "mistyrose",
+    "antiquewhite",
+    "linen",
+    "beige",
+    "whitesmoke",
+    "lavenderblush",
+    "oldlace",
+    "aliceblue",
+    "seashell",
+    "ghostwhite",
+    "honeydew",
+    "floralwhite",
+    "azure",
+    "mintcream",
+    "snow",
+    "ivory",
+    "white",
+    // Gray / black
+    "black",
+    "darkslategray",
+    "dimgray",
+    "slategray",
+    "gray",
+    "lightslategray",
+    "darkgray",
+    "silver",
+    "lightgray",
+    "gainsboro",
+  ].map((c) => c.toLowerCase())
+);
+
+const sanitizeColor = (color, active) => {
+  if (!active) return "black";
+  const c = String(color || "").toLowerCase();
+  return ALLOWED_COLORS.has(c) ? c : "black";
+};
+
 // ============================================================================
 // Routes - Públicas
 // ============================================================================
@@ -298,8 +461,7 @@ app.get("/admin/projects", async (req, res) => {
   res.json(data.projects);
 });
 
-// Crear nuevo proyecto
-app.post("/admin/projects", async (req, res) => {
+async function handleCreateProject(req, res) {
   const { name, password, color, active } = req.body || {};
   
   if (!name || !String(name).trim())
@@ -312,8 +474,8 @@ app.post("/admin/projects", async (req, res) => {
     id: uuidv4(),
     name: String(name).trim(),
     password: String(password).trim(),
-    color: color || "blue",
     active: active !== false,
+    color: sanitizeColor(color || "black", active !== false),
     created_at: nowISO(),
     messages: [],
   };
@@ -323,10 +485,13 @@ app.post("/admin/projects", async (req, res) => {
   
   await saveState(next, `create project: ${project.name}`);
   res.status(201).json(project);
-});
+}
 
-// Actualizar proyecto existente
-app.patch("/admin/projects/:id", async (req, res) => {
+// Crear nuevo proyecto
+app.post("/admin/projects", handleCreateProject);
+app.post("/projects", handleCreateProject); // alias para cumplir arquitectura
+
+async function handleUpdateProject(req, res) {
   const { id } = req.params;
   const { name, password, color, active } = req.body || {};
   
@@ -337,8 +502,10 @@ app.patch("/admin/projects/:id", async (req, res) => {
   const project = { ...state.data.projects[idx] };
   if (name !== undefined) project.name = String(name).trim();
   if (password !== undefined) project.password = String(password).trim();
-  if (color !== undefined) project.color = color;
-  if (active !== undefined) project.active = active;
+  const nextActive = active !== undefined ? active : project.active;
+  project.active = nextActive;
+  const desiredColor = color !== undefined ? color : project.color;
+  project.color = sanitizeColor(desiredColor, nextActive);
   
   const next = { ...state.data };
   next.projects = [...state.data.projects];
@@ -346,10 +513,13 @@ app.patch("/admin/projects/:id", async (req, res) => {
   
   await saveState(next, `update project: ${project.name}`);
   res.json(project);
-});
+}
 
-// Archivar proyecto (mover a history)
-app.delete("/admin/projects/:id", async (req, res) => {
+// Actualizar proyecto existente
+app.patch("/admin/projects/:id", handleUpdateProject);
+app.patch("/projects/:id", handleUpdateProject); // alias para cumplir arquitectura
+
+async function handleArchiveProject(req, res) {
   const { id } = req.params;
   
   const state = await loadState();
@@ -365,7 +535,11 @@ app.delete("/admin/projects/:id", async (req, res) => {
   
   await saveState(next, `archive project: ${project.name}`);
   res.json({ ok: true });
-});
+}
+
+// Archivar proyecto (mover a history)
+app.delete("/admin/projects/:id", handleArchiveProject);
+app.delete("/projects/:id", handleArchiveProject); // alias para cumplir arquitectura
 
 // ============================================================================
 // Start server

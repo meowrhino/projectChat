@@ -7,6 +7,159 @@
    Configuración
    ========================= */
 const MASTER_PASSWORD = "arturmac";
+const HTML_COLORS = [
+  // Pink
+  "MediumVioletRed",
+  "DeepPink",
+  "PaleVioletRed",
+  "HotPink",
+  "LightPink",
+  "Pink",
+  // Red
+  "DarkRed",
+  "Red",
+  "Firebrick",
+  "Crimson",
+  "IndianRed",
+  "LightCoral",
+  "Salmon",
+  "DarkSalmon",
+  "LightSalmon",
+  // Orange
+  "OrangeRed",
+  "Tomato",
+  "DarkOrange",
+  "Coral",
+  "Orange",
+  // Yellow
+  "DarkKhaki",
+  "Gold",
+  "Khaki",
+  "PeachPuff",
+  "Yellow",
+  "PaleGoldenrod",
+  "Moccasin",
+  "PapayaWhip",
+  "LightGoldenrodYellow",
+  "LemonChiffon",
+  "LightYellow",
+  // Brown
+  "Maroon",
+  "Brown",
+  "SaddleBrown",
+  "Sienna",
+  "Chocolate",
+  "DarkGoldenrod",
+  "Peru",
+  "RosyBrown",
+  "Goldenrod",
+  "SandyBrown",
+  "Tan",
+  "Burlywood",
+  "Wheat",
+  "NavajoWhite",
+  "Bisque",
+  "BlanchedAlmond",
+  "Cornsilk",
+  // Purple / violet / magenta
+  "Indigo",
+  "Purple",
+  "DarkMagenta",
+  "DarkViolet",
+  "DarkSlateBlue",
+  "BlueViolet",
+  "DarkOrchid",
+  "Fuchsia",
+  "Magenta",
+  "SlateBlue",
+  "MediumSlateBlue",
+  "MediumOrchid",
+  "MediumPurple",
+  "Orchid",
+  "Violet",
+  "Plum",
+  "Thistle",
+  "Lavender",
+  // Blue
+  "MidnightBlue",
+  "Navy",
+  "DarkBlue",
+  "MediumBlue",
+  "Blue",
+  "RoyalBlue",
+  "SteelBlue",
+  "DodgerBlue",
+  "DeepSkyBlue",
+  "CornflowerBlue",
+  "SkyBlue",
+  "LightSkyBlue",
+  "LightSteelBlue",
+  "LightBlue",
+  "PowderBlue",
+  // Cyan
+  "Teal",
+  "DarkCyan",
+  "LightSeaGreen",
+  "CadetBlue",
+  "DarkTurquoise",
+  "MediumTurquoise",
+  "Turquoise",
+  "Aqua",
+  "Cyan",
+  "Aquamarine",
+  "PaleTurquoise",
+  "LightCyan",
+  // Green
+  "DarkGreen",
+  "Green",
+  "DarkOliveGreen",
+  "ForestGreen",
+  "SeaGreen",
+  "Olive",
+  "OliveDrab",
+  "MediumSeaGreen",
+  "LimeGreen",
+  "Lime",
+  "SpringGreen",
+  "MediumSpringGreen",
+  "DarkSeaGreen",
+  "MediumAquamarine",
+  "YellowGreen",
+  "LawnGreen",
+  "Chartreuse",
+  "LightGreen",
+  "GreenYellow",
+  "PaleGreen",
+  // White-ish
+  "MistyRose",
+  "AntiqueWhite",
+  "Linen",
+  "Beige",
+  "WhiteSmoke",
+  "LavenderBlush",
+  "OldLace",
+  "AliceBlue",
+  "Seashell",
+  "GhostWhite",
+  "Honeydew",
+  "FloralWhite",
+  "Azure",
+  "MintCream",
+  "Snow",
+  "Ivory",
+  "White",
+  // Gray / black
+  "Black",
+  "DarkSlateGray",
+  "DimGray",
+  "SlateGray",
+  "Gray",
+  "LightSlateGray",
+  "DarkGray",
+  "Silver",
+  "LightGray",
+  "Gainsboro",
+];
 
 /* =========================
    API helper
@@ -53,6 +206,7 @@ let projects = [];
 let editingProject = null;
 let currentProject = null;
 let sse = null;
+let lastActiveColor = "blue";
 
 /* =========================
    Helpers UI (modals)
@@ -70,6 +224,30 @@ function hideModal(el) { el.classList.remove("show"); }
     btn.addEventListener("click", () => hideModal(m))
   );
 });
+
+// Poblar selector de colores
+function populateColors() {
+  projectColor.innerHTML = "";
+  HTML_COLORS.forEach((c) => {
+    const opt = document.createElement("option");
+    opt.value = c.toLowerCase();
+    opt.textContent = c;
+    projectColor.appendChild(opt);
+  });
+}
+
+function handleActiveToggle(skipRemember) {
+  if (!projectActive.checked) {
+    if (!skipRemember) lastActiveColor = projectColor.value || "blue";
+    projectColor.value = "black";
+    projectColor.disabled = true;
+  } else {
+    projectColor.disabled = false;
+    projectColor.value = lastActiveColor || "blue";
+  }
+}
+
+projectActive.addEventListener("change", handleActiveToggle);
 
 /* =========================
    Autenticación
@@ -192,6 +370,7 @@ btnNewProject.addEventListener("click", () => {
   projectPassword.value = "";
   projectColor.value = "blue";
   projectActive.checked = true;
+  handleActiveToggle();
   showModal(modalProject);
   setTimeout(() => projectName.focus(), 0);
 });
@@ -201,8 +380,13 @@ function editProject(project) {
   projectModalTitle.textContent = "editar proyecto";
   projectName.value = project.name;
   projectPassword.value = project.password;
-  projectColor.value = project.color || "blue";
+  projectColor.value = (project.color || "blue").toLowerCase();
+  lastActiveColor = projectColor.value;
   projectActive.checked = project.active;
+  if (!projectActive.checked) {
+    projectColor.value = "black";
+  }
+  handleActiveToggle(true);
   showModal(modalProject);
   setTimeout(() => projectName.focus(), 0);
 }
@@ -212,7 +396,7 @@ btnSaveProject.addEventListener("click", saveProject);
 async function saveProject() {
   const name = projectName.value.trim();
   const password = projectPassword.value.trim();
-  const color = projectColor.value;
+  const color = projectActive.checked ? projectColor.value : "black";
   const active = projectActive.checked;
   
   if (!name) {
@@ -351,3 +535,5 @@ function appendMsg(container, msg) {
    Init
    ========================= */
 setTimeout(() => authInput.focus(), 0);
+populateColors();
+handleActiveToggle();

@@ -1,108 +1,91 @@
-'''
-# TODO: Guía de Despliegue y Resumen del Proyecto
+# TODO: guía de despliegue y cambios recientes
 
-¡Hola! Aquí tienes el resumen completo del trabajo realizado y la guía paso a paso para que puedas desplegar tu nueva aplicación de chat para proyectos. He seguido todas tus indicaciones para crear un sistema robusto y fácil de usar.
+## Qué se hizo
+- Paleta completa de colores HTML en el admin; los proyectos inactivos se guardan/leen siempre en color `black`.
+- Backend valida colores permitidos y normaliza a minúsculas; si un proyecto se marca inactivo su color pasa a negro.
+- Alias de endpoints sin prefijo `/admin` para alinearse con la arquitectura (`POST/PATCH/DELETE /projects`).
+- `config.js` ahora permite override por `localStorage` o `window.__API_BASE` y cae a `http://localhost:10000` para desarrollo.
+- Estilos: grid sin líneas visibles, hover con fondo suave, botones solo texto con tres estados, sombra negra, chips en color muted.
+- Documentación de backend actualizada (`backend/README.md`, `backend/render.yaml`).
 
----
+## Probar en local
+1) Backend  
+   - Instala deps: `cd backend && npm install`.  
+   - Crea un `.env` (o exporta vars) con:  
+     - `GITHUB_TOKEN`, `GH_REPO`, `GH_BRANCH=main`, `GH_FILEPATH=projects.json`, `ORIGIN_WHITELIST=*` (o tu dominio).  
+   - Arranca: `npm start` (escucha en `10000`).
 
-## ✅ Checklist de Tareas Realizadas
+2) Frontend  
+   - En el navegador, antes de abrir `index.html` o `admin.html`:  
+     ```js
+     localStorage.setItem('mp_api','http://localhost:10000');
+     ```  
+   - Abre `admin.html`, contraseña maestra: `arturmac`.  
+   - Crea un proyecto activo eligiendo color HTML; marca inactivo para que quede negro; envía mensajes como Manu.  
+   - Abre `index.html`, entra con la contraseña del proyecto y chatea como cliente.  
+   - Archiva un proyecto desde el admin y consúltalo en el histórico (pide contraseña).
 
-- [x] **Análisis del Repositorio `gridChat`**: Cloné y estudié la estructura original para entender la base sobre la que construiríamos.
-- [x] **Diseño de la Nueva Arquitectura**: Planifiqué la nueva estructura de datos con `projects.json`, las vistas de cliente y administrador, y los endpoints del backend necesarios.
-- [x] **Desarrollo del Frontend Completo**:
-    - [x] Creado `index.html`: La vista pública para tus clientes, donde ven los proyectos activos.
-    - [x] Creado `admin.html`: El panel de administración para que gestiones todo.
-    - [x] Creado `app.js`: La lógica para la vista del cliente (solicitar contraseñas, mostrar chats, etc.).
-    - [x] Creado `admin.js`: La lógica para el panel de admin (contraseña maestra, crear/editar/archivar proyectos).
-    - [x] Actualizado `style.css`: Nuevos estilos para la cuadrícula de proyectos, el panel de admin y los chats, manteniendo la estética minimalista.
-- [x] **Desarrollo del Backend (Funciones Serverless)**:
-    - [x] Reescribí `backend/server.js` por completo para adaptarlo al nuevo sistema.
-    - [x] Implementé la lógica para gestionar `projects.json` en GitHub.
-    - [x] Creado endpoints públicos para clientes (`/projects`, `/history`, etc.).
-    - [x] Creado endpoints de administración seguros (`/admin/projects`).
-    - [x] Implementado el sistema de verificación de contraseñas.
-    - [x] Configurado el sistema de tiempo real (SSE) para los chats.
-- [x] **Creación de Archivos Iniciales**:
-    - [x] Creado un `projects.json` inicial y vacío, listo para ser usado.
-    - [x] Eliminado el `chats.json` original que ya no es necesario.
-- [x] **Documentación y Guía de Despliegue**: He creado este mismo archivo (`TODO.md`) para guiarte en el proceso final.
+## Despliegue en Render (backend)
+1) Sube todo a GitHub.  
+2) Crea un Web Service en Render apuntando a `backend/` (Node 20).  
+   - Build: `npm install`  
+   - Start: `npm start`  
+3) Env vars obligatorias:  
+   - `GITHUB_TOKEN` (PAT con scope `repo`)  
+   - `GH_REPO` (`owner/repo`)  
+   - `GH_BRANCH` (`main`)  
+   - `GH_FILEPATH` (`projects.json`)  
+- `ORIGIN_WHITELIST` (`https://<tu>.github.io` o `*` mientras pruebas)  
+4) Tras desplegar, Render mostrará la URL pública; úsala para el frontend.
 
----
+## Publicar frontend
+- Opción rápida: GitHub Pages / Render Static Site con `index.html`, `admin.html`, `app.js`, `admin.js`, `style.css`, `config.js`, `favicon.svg`.  
+- En producción, fija `API_BASE` en `config.js` a la URL de Render o usa en el navegador:  
+  ```js
+  localStorage.setItem('mp_api','https://tu-backend.onrender.com');
+  ```  
+- Contraseña maestra está en `admin.js` (`MASTER_PASSWORD`).
 
-## 🚀 Guía de Despliegue en Render
-
-Para poner tu aplicación online, usaremos **Render**, que es perfecto para este tipo de proyectos. El proceso es bastante sencillo. Sigue estos pasos con atención.
-
-### Paso 1: Prepara tu Repositorio de GitHub
-
-1.  **Sube el Código**: Sube todos los archivos de este proyecto a tu repositorio de GitHub (`meowrhino/gridChat`). Asegúrate de que la rama principal (normalmente `main`) esté actualizada con todos los cambios.
-2.  **Genera un GitHub Personal Access Token**: Este token es la "llave" que permitirá a tu aplicación leer y escribir en el archivo `projects.json` de tu repositorio.
-    *   Ve a GitHub y entra en **Settings** (haz clic en tu foto de perfil arriba a la derecha).
-    *   En el menú de la izquierda, baja hasta **Developer settings**.
-    *   Ve a **Personal access tokens** -> **Tokens (classic)**.
-    *   Haz clic en **Generate new token** -> **Generate new token (classic)**.
-    *   **Note**: Dale un nombre descriptivo, como `render-gridchat-token`.
-    *   **Expiration**: Elige **No expiration** para que no deje de funcionar.
-    - **Select scopes**: Marca la casilla **`repo`** (control total de repositorios privados). Esto es suficiente.
-    *   Haz clic en **Generate token**.
-    *   **¡MUY IMPORTANTE!** Copia el token que aparece (empieza por `ghp_...`) y guárdalo en un lugar seguro. **No podrás volver a verlo después de cerrar la página**.
-
-### Paso 2: Configura el Servicio en Render
-
-1.  **Crea una Cuenta en Render**: Si no tienes una, regístrate en [render.com](https://render.com/).
-2.  **Crea un Nuevo "Web Service"**:
-    *   En tu dashboard de Render, haz clic en **New +** y selecciona **Web Service**.
-    *   Conecta tu cuenta de GitHub y selecciona tu repositorio (`meowrhino/gridChat`).
-    *   Dale un nombre único a tu servicio (ej: `mi-chat-proyectos`).
-3.  **Configura los Ajustes del Servicio**: Render te pedirá que configures cómo construir y ejecutar tu aplicación. Usa los siguientes valores:
-    *   **Region**: Elige la más cercana a ti (ej: `Frankfurt`).
-    *   **Branch**: `main` (o la rama principal de tu repo).
-    *   **Root Directory**: `backend` (¡Importante! Le decimos a Render que el código del servidor está en la carpeta `backend`).
-    *   **Runtime**: `Node`.
-    *   **Build Command**: `npm install`.
-    *   **Start Command**: `node server.js`.
-    *   **Instance Type**: `Free` (el plan gratuito es suficiente).
-
-### Paso 3: Añade las Variables de Entorno
-
-Esta es la parte más importante. Aquí conectarás tu app con GitHub.
-
-1.  Dentro de la configuración de tu servicio en Render, ve a la sección de **Environment**.
-2.  Haz clic en **Add Environment Variable** y añade las siguientes 4 variables, una por una:
-
-| Key             | Value                                     |
-| --------------- | ----------------------------------------- |
-| `GITHUB_TOKEN`  | El token que generaste en el Paso 1 (`ghp_...`). |
-| `GH_REPO`       | Tu nombre de usuario y repo (ej: `meowrhino/gridChat`). |
-| `GH_BRANCH`     | `main` (o el nombre de tu rama principal). |
-| `GH_FILEPATH`   | `projects.json` (el nombre del archivo de datos). |
-
-### Paso 4: Despliega y Configura el Frontend
-
-1.  **Crea el Despliegue Manual**: Haz clic en el botón **Create Web Service** al final de la página de configuración.
-2.  **Espera a que se Despliegue**: Render empezará a instalar las dependencias y a iniciar tu servidor. Verás un log en tiempo real. Si todo va bien, aparecerá el mensaje `project-chat backend listening on 10000` y tu servicio estará "Live".
-3.  **Obtén la URL de tu Backend**: Render te dará una URL pública para tu servicio, algo como `https://mi-chat-proyectos.onrender.com`. Cópiala.
-
-4.  **Configura el Frontend**:
-    *   Abre el archivo `config.js` en tu editor de código.
-    *   Pega la URL de tu backend en la variable `API_BASE`:
-
-        ```javascript
-        const API_BASE = "https://projectchat-yo8v.onrender.com/";
-        ```
-
-    *   Guarda el archivo y **sube este último cambio a tu repositorio de GitHub**.
-
-### ¡Listo! Tu Aplicación Está Online
-
-Una vez que subas el `config.js` actualizado, tu aplicación estará completamente funcional.
-
-*   **Para ver la vista de cliente**: Simplemente abre el archivo `index.html` en tu navegador local o súbelo a un hosting estático como GitHub Pages.
-*   **Para acceder al admin**: Abre el archivo `admin.html`.
-
-Si quieres que el frontend también esté online, puedes usar **Render Static Sites** o **GitHub Pages** para alojar los archivos `index.html`, `admin.html`, `app.js`, `admin.js` y `style.css`. Es un proceso similar y muy sencillo.
+## Notas de uso
+- Colores admitidos: toda la lista de nombres HTML estándar (Magenta, DodgerBlue, LemonChiffon, etc.); si es inactivo o el color no es válido se usa `black`.  
+- Historial: sigue mostrando lista, pide contraseña y abre en solo lectura.  
+- Alineación de mensajes: como cliente tus mensajes van a la derecha; como admin, los de Manu a la derecha.
 
 ---
 
-Si tienes cualquier duda durante el despliegue, no dudes en preguntar. ¡Espero que disfrutes de tu nueva herramienta!
-'''
+## Guía de despliegue (versión extendida, paso a paso)
+
+### Checklist de tareas (realizado)
+- [x] Análisis del repo original `gridChat`.
+- [x] Diseño de la nueva arquitectura con `projects.json`, vistas cliente/admin y endpoints.
+- [x] Frontend completo: `index.html`, `admin.html`, `app.js`, `admin.js`, `style.css`.
+- [x] Backend reescrito para `projects.json`, verificación de contraseñas, SSE y endpoints públicos/admin.
+- [x] `projects.json` inicial creado; `chats.json` ya no se usa.
+- [x] Documentación y guía de despliegue.
+
+### Despliegue en Render
+1) Prepara el repo en GitHub con todo el código.  
+2) Genera un PAT en GitHub con scope `repo` (sin expiración, si quieres).  
+3) Crea un Web Service en Render:  
+   - Region: la más cercana (ej: Frankfurt).  
+   - Branch: `main`.  
+   - Root Directory: `backend`.  
+   - Runtime: Node.  
+   - Build: `npm install`.  
+   - Start: `node server.js`.  
+   - Plan: Free.  
+4) Variables de entorno en Render:  
+   - `GITHUB_TOKEN` (el PAT).  
+   - `GH_REPO` (`owner/repo`).  
+   - `GH_BRANCH` (`main`).  
+   - `GH_FILEPATH` (`projects.json`).  
+   - `ORIGIN_WHITELIST` (`https://<tu>.github.io` o `*` mientras pruebas).  
+5) Deploy y espera el log `project-chat backend listening on 10000`.  
+6) Copia la URL pública del backend (ej: `https://mi-chat-proyectos.onrender.com`).  
+7) Configura el frontend: en `config.js` fija `API_BASE` o usa en el navegador  
+   `localStorage.setItem('mp_api','https://mi-chat-proyectos.onrender.com');`.
+
+### Frontend online
+- Usa GitHub Pages / Render Static Site para servir los archivos estáticos.  
+- Abre `admin.html` para el panel (contraseña maestra `arturmac` editable en `admin.js`).  
+- Abre `index.html` para la vista de cliente.

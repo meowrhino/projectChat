@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: message-park-backend
+    name: project-chat-backend
     env: node
     plan: free
     region: frankfurt
@@ -13,5 +13,5 @@ services:
       # - GITHUB_TOKEN (secret)
       # - GH_REPO (owner/repo)
       # - GH_BRANCH (main)
-      # - GH_FILEPATH (chats.json)
+      # - GH_FILEPATH (projects.json)
       # - ORIGIN_WHITELIST (e.g. https://<user>.github.io)
