@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🔐 Admin - Chat de Proyectos</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script defer src="./config.js"></script>
+  <script defer src="./admin.js"></script>
+</head>
+<body>
+  <!-- Modal: autenticación admin -->
+  <div class="modal show" id="modalAuth">
+    <div class="panel" data-modal-panel>
+      <h3>autenticación de administrador</h3>
+      <label>contraseña maestra</label>
+      <input id="authInput" type="password" placeholder="Introduce la contraseña maestra..." />
+      <div class="row" style="margin-top:10px;">
+        <div class="space"></div>
+        <button class="primary" id="btnAuth">acceder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" id="adminPanel" style="display: none;">
+    <div class="row" style="margin-bottom: 20px;">
+      <h1>panel de administración</h1>
+      <div class="space"></div>
+      <button id="btnNewProject" class="primary">+ nuevo proyecto</button>
+    </div>
+    
+    <div id="projectList" class="project-list"></div>
+  </div>
+
+  <!-- Modal: crear/editar proyecto -->
+  <div class="modal" id="modalProject">
+    <div class="panel" data-modal-panel>
+      <h3 id="projectModalTitle">nuevo proyecto</h3>
+      
+      <label>nombre del proyecto</label>
+      <input id="projectName" type="text" placeholder="Ej: Rediseño Web Empresa X" />
+      
+      <label>contraseña del proyecto</label>
+      <input id="projectPassword" type="text" placeholder="Ej: clave123" />
+      
+      <label>color del proyecto</label>
+      <select id="projectColor">
+        <option value="red">rojo (red)</option>
+        <option value="blue">azul (blue)</option>
+        <option value="green">verde (green)</option>
+        <option value="yellow">amarillo (yellow)</option>
+        <option value="purple">púrpura (purple)</option>
+        <option value="orange">naranja (orange)</option>
+        <option value="pink">rosa (pink)</option>
+        <option value="cyan">cian (cyan)</option>
+        <option value="magenta">magenta (magenta)</option>
+        <option value="lime">lima (lime)</option>
+        <option value="navy">azul marino (navy)</option>
+        <option value="teal">verde azulado (teal)</option>
+        <option value="olive">oliva (olive)</option>
+        <option value="maroon">granate (maroon)</option>
+        <option value="aqua">agua (aqua)</option>
+        <option value="fuchsia">fucsia (fuchsia)</option>
+        <option value="silver">plata (silver)</option>
+        <option value="gray">gris (gray)</option>
+        <option value="black">negro (black)</option>
+        <option value="white">blanco (white)</option>
+      </select>
+      
+      <div class="row" style="margin-top: 10px;">
+        <label style="margin: 0;">proyecto activo</label>
+        <div class="space"></div>
+        <input id="projectActive" type="checkbox" checked />
+      </div>
+      
+      <div class="row" style="margin-top:20px;">
+        <button class="ghost" data-cancel>cancelar</button>
+        <div class="space"></div>
+        <button class="primary" id="btnSaveProject">guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: chat como admin -->
+  <div class="modal" id="modalChat">
+    <div class="panel" data-modal-panel>
+      <div class="row">
+        <h3 id="chatTitle">Chat</h3>
+        <div class="space"></div>
+        <span class="chip">admin (manu)</span>
+        <button class="ghost" data-cancel>cerrar</button>
+      </div>
+      <div id="chatMessages" class="messages"></div>
+      <div class="row" style="margin-top:8px;">
+        <input id="msgBody" type="text" placeholder="Escribe como Manu..." />
+        <button id="btnSend" class="primary">enviar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

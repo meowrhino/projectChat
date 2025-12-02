@@ -1,0 +1,10 @@
+style.css: la grid me gustaria que fuese invisible! que cambie de color de bg con hover si eso y ya pero no necesito que se vean las lineas
+
+los botones me gustaría que fuesen sólo texto con sus 3 estados y punto, 
+
+la sombra que sea negra y chaooo
+
+title y meta que usen colores de text y muted, o incluso si lo necesitas generar un 3er color de texto ho fem
+
+las etiquetas pequeñas ya no existen no? o podrían estar en muted
+

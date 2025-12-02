@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Chat de Proyectos — meowrhino flat theme
+   ========================================================================== */
+
+/* 1) Paleta base ---------------------------------------------------------- */
+:root {
+  /* Base */
+  --bg-1: #353535;
+  --bg-2: #202020;
+  --text: #fcfaf1;
+  --muted: #707070;
+  --accent: #f9d57b;
+  --accent-2: #ec8051;
+
+  /* Estados */
+  --ok: #22c751;
+  --warn: #ffd166;
+  --danger: #f24a5e;
+
+  /* Utilidades */
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --ring: var(--accent);
+}
+
+/* 2) Base / Reset --------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg-1);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 20px;
+}
+
+/* 3) Contenedor principal ------------------------------------------------- */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  font-family: serif;
+  color: var(--text);
+  margin: 0 0 20px 0;
+  font-size: 2em;
+  text-align: center;
+}
+
+/* 4) Grid de proyectos ---------------------------------------------------- */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.project-card {
+  background: var(--bg-2);
+  padding: 30px 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 4px solid var(--accent);
+  text-align: center;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.project-card h3 {
+  margin: 0;
+  font-size: 1.3em;
+  font-family: serif;
+}
+
+/* 5) Lista de proyectos (admin) ------------------------------------------- */
+.project-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-project-card {
+  background: var(--bg-2);
+  padding: 20px;
+  border-left: 4px solid var(--accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.admin-project-card h3 {
+  font-family: serif;
+  margin: 0;
+}
+
+/* 6) Modals / Paneles ----------------------------------------------------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+.modal.show {
+  display: flex;
+}
+
+.panel {
+  width: min(720px, 95vw);
+  background: var(--bg-2);
+  padding: 24px;
+  max-height: 85vh;
+  overflow: auto;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+
+/* 7) Formularios ---------------------------------------------------------- */
+label {
+  display: block;
+  font-size: 13px;
+  color: var(--muted);
+  margin: 12px 0 6px;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-1);
+  color: var(--text);
+  border: 1px solid transparent;
+  outline: none;
+  transition: border-color 0.2s ease;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--accent);
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+select {
+  cursor: pointer;
+}
+
+/* 8) Botones -------------------------------------------------------------- */
+button {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+button:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+button:active {
+  color: var(--accent-2);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+button.primary {
+  color: var(--accent);
+  background: none;
+}
+
+button.primary:hover {
+  color: var(--accent-2);
+}
+
+button.ghost {
+  color: var(--muted);
+}
+
+button.ghost:hover {
+  color: var(--text);
+}
+
+/* 9) Utilidades de layout ------------------------------------------------- */
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.space {
+  flex: 1;
+}
+
+.small {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.chip {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  background: var(--muted);
+  color: var(--text);
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+/* 10) Mensajes ------------------------------------------------------------ */
+.messages {
+  padding: 16px;
+  margin-top: 12px;
+  max-height: 50vh;
+  overflow-y: auto;
+  background: var(--bg-1);
+}
+
+.msg {
+  position: relative;
+  background: var(--bg-2);
+  padding: 12px 16px;
+  margin: 10px 0;
+  border-left: 4px solid var(--accent);
+}
+
+.msg .body {
+  font-size: 15px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.msg .meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+/* Alineación mine/other */
+.msg.mine {
+  margin-left: 20%;
+  border-left: none;
+  border-right: 4px solid var(--accent);
+}
+
+.msg.other {
+  margin-right: 20%;
+}
+
+@media (max-width: 640px) {
+  .msg.mine {
+    margin-left: 10%;
+  }
+  .msg.other {
+    margin-right: 10%;
+  }
+}
+
+/* 11) Responsive ---------------------------------------------------------- */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  .panel {
+    padding: 16px;
+  }
+}

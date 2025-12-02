@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>💬 Chat de Proyectos</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script defer src="./config.js"></script>
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>proyectos activos</h1>
+    <div id="projectGrid" class="project-grid"></div>
+    <button id="btnHistory" class="ghost" style="margin-top: 20px;">ver histórico</button>
+  </div>
+
+  <!-- Modal: verificar contraseña -->
+  <div class="modal" id="modalPassword">
+    <div class="panel" data-modal-panel>
+      <h3 id="passwordTitle">acceder al proyecto</h3>
+      <label>contraseña</label>
+      <input id="passwordInput" type="password" placeholder="Introduce la contraseña..." />
+      <div class="row" style="margin-top:10px;">
+        <button class="ghost" data-cancel>cancelar</button>
+        <div class="space"></div>
+        <button class="primary" id="btnVerify">acceder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: chat -->
+  <div class="modal" id="modalChat">
+    <div class="panel" data-modal-panel>
+      <div class="row">
+        <h3 id="chatTitle">Chat</h3>
+        <div class="space"></div>
+        <button class="ghost" data-cancel>cerrar</button>
+      </div>
+      <div id="chatMessages" class="messages"></div>
+      <div class="row" style="margin-top:8px;">
+        <input id="msgBody" type="text" placeholder="Escribe tu mensaje..." />
+        <button id="btnSend" class="primary">enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: histórico (lista) -->
+  <div class="modal" id="modalHistory">
+    <div class="panel" data-modal-panel>
+      <h3>histórico de proyectos</h3>
+      <div id="histList" class="messages" style="max-height:60vh;"></div>
+      <div class="row" style="margin-top:8px;">
+        <div class="space"></div>
+        <button class="primary" data-cancel>cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: histórico (solo lectura) -->
+  <div class="modal" id="modalHistChat">
+    <div class="panel" data-modal-panel>
+      <div class="row">
+        <h3 id="histTitle">Chat</h3>
+        <div class="space"></div>
+        <span class="chip">sólo lectura</span>
+      </div>
+      <div id="histMessages" class="messages"></div>
+      <div class="row" style="margin-top:8px;">
+        <div class="space"></div>
+        <button class="primary" data-cancel>cerrar</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

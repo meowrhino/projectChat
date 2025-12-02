@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: message-park-backend
+    env: node
+    plan: free
+    region: frankfurt
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      # Add env vars:
+      # - GITHUB_TOKEN (secret)
+      # - GH_REPO (owner/repo)
+      # - GH_BRANCH (main)
+      # - GH_FILEPATH (chats.json)
+      # - ORIGIN_WHITELIST (e.g. https://<user>.github.io)
